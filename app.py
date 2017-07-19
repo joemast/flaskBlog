@@ -3,13 +3,14 @@ from flask import (Flask, g, session, redirect, url_for, render_template,
 
 from flask_login import (LoginManager, login_required, logout_user,
                             current_user, login_user)
+from sqlalchemy import exc
 
 from models import db, Login, Post
 
 from datetime import datetime
 
 from werkzeug.security import check_password_hash as chpass
-
+from os import path
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -22,12 +23,6 @@ db.init_app(app)
 @app.template_filter('truncate_chars')
 def truncate_chars(s):
     return s[:500]
-    
-@app.template_filter('format_date')
-def format_date(date, fmt=None):
-    if fmt:
-        return date.strftime(fmt)
-    else: return date.strftime("%a, %d %b %Y")
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -56,15 +51,19 @@ def sign():
         elif not request.form["password"]:
             flash("Enter with a Password")
         else:
-            user = Login(request.form["username"],
-                request.form["email"],
-                request.form["name"],
-                request.form["password"])
-            db.session.add(user)
-            db.session.commit()
-            flash("User Sign")
-            return redirect(url_for("login"))
-
+            try:
+                user = Login(request.form["username"],
+                             request.form["email"],
+                             request.form["name"],
+                             request.form["password"])
+                db.session.add(user)
+                db.session.commit()
+                flash("User Sign")
+                return redirect(url_for("login"))
+            except exc.IntegrityError:
+                flash("This Username Or Email Alredy Exists")
+                return redirect(url_for("login"))
+            
     return render_template("sign.html")
 
 
@@ -100,6 +99,7 @@ def public():
 def post(post_id):
     post = Post.query.filter_by(id=post_id).first()
     return render_template("post.html", result=post)
+
 
 @app.route("/update/<int:uid>", methods=["POST", "GET"])
 @login_required
@@ -145,7 +145,6 @@ def login():
 
         return redirect(url_for("login"))
 
-    flash("Something Goes Wrong!")
     return render_template("login.html")
 
 
