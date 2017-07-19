@@ -22,6 +22,12 @@ db.init_app(app)
 @app.template_filter('truncate_chars')
 def truncate_chars(s):
     return s[:500]
+    
+@app.template_filter('format_date')
+def format_date(date, fmt=None):
+    if fmt:
+        return date.strftime(fmt)
+    else: return date.strftime("%a, %d %b %Y")
 
 @login_manager.user_loader
 def user_loader(user_id):
