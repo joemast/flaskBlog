@@ -13,7 +13,7 @@
       <h5 class="card-title">{{ r.pub_date }}</h5>
     </div>
     <div class="card-block">
-      <p class="card-text text-justify">{{ r.content }}</p>
+      <p class="card-text text-justify">{{ r.content|truncate_chars }}...<a href="{{ url_for('post', post_id=r.id) }}">leia mais!</a></p>
     </div>
   </div>
 
