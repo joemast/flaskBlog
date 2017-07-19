@@ -18,6 +18,11 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 db.init_app(app)
 
+
+@app.template_filter('truncate_chars')
+def truncate_chars(s):
+    return s[:500]
+
 @login_manager.user_loader
 def user_loader(user_id):
     return Login.query.get(int(user_id))
@@ -84,6 +89,11 @@ def public():
     post = Post.query.all()
     return render_template("public.html", result=post)
 
+
+@app.route("/public/<int:post_id>", methods=["POST", "GET"])
+def post(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+    return render_template("post.html", result=post)
 
 @app.route("/update/<int:uid>", methods=["POST", "GET"])
 @login_required
