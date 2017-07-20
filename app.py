@@ -5,15 +5,16 @@ from flask import (Flask, flash, g, redirect, render_template, request,
                    session, url_for)
 from flask_login import (LoginManager, current_user, login_required,
                          login_user, logout_user)
+from flaskext.markdown import Markdown
 from models import Login, Post, db
 from sqlalchemy import exc
 from werkzeug.security import check_password_hash as chpass
-
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
 login_manager = LoginManager()
 login_manager.init_app(app)
+Markdown(app)
 login_manager.login_view = "login"
 db.init_app(app)
 
