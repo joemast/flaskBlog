@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if posts %}
+{% for p in posts %}
+<br>
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-title">{{ p.title }}</h4>
+      <h5 class="card-title">{{ p.pub_date|format_date }}</h5>
+    </div>
+    <div class="card-block">
+      <p class="card-text text-justify">{{ p.content|truncate_chars|markdown }}
+        <a href="{{ url_for('blog.post', post_id=p.id) }}">:: leia mais ::</a></p>
+      <a class="btn btn-danger" href="{{ url_for('blog.delete_post', post_id=p.id)}}">Delete</a>
+      <a class="btn btn-success" href="{{ url_for('blog.edit_post', post_id=p.id)}}">Edit</a>
+    </div>
+  </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+{% endblock %}

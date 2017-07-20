@@ -1,7 +1,13 @@
 database.sqlite
 __pycache__
+.idea/
 
 venv/
 env/
 *.pyc
 *.pyo
+
+*.db
+*.sqlite
+*.storage
+*.database
