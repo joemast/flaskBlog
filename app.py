@@ -1,16 +1,14 @@
-from flask import (Flask, g, session, redirect, url_for, render_template,
-                    request, flash)
-
-from flask_login import (LoginManager, login_required, logout_user,
-                            current_user, login_user)
-from sqlalchemy import exc
-
-from models import db, Login, Post
-
 from datetime import datetime
-
-from werkzeug.security import check_password_hash as chpass
 from os import path
+
+from flask import (Flask, flash, g, redirect, render_template, request,
+                   session, url_for)
+from flask_login import (LoginManager, current_user, login_required,
+                         login_user, logout_user)
+from models import Login, Post, db
+from sqlalchemy import exc
+from werkzeug.security import check_password_hash as chpass
+
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
@@ -63,7 +61,7 @@ def sign():
             except exc.IntegrityError:
                 flash("This Username Or Email Alredy Exists")
                 return redirect(url_for("login"))
-            
+
     return render_template("sign.html")
 
 
@@ -86,7 +84,8 @@ def index():
 @login_required
 def result():
     post = Post.query.filter_by(login_id=current_user.id)
-    return render_template("result.html", result=post, user=current_user.username)
+    return render_template("result.html", result=post,
+                            user=current_user.username)
 
 
 @app.route("/public", methods=["POST", "GET"])
