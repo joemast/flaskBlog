@@ -142,7 +142,11 @@ def login():
                 login_user(log_user)
                 flash("You are Logged")
                 return redirect(url_for("index"))
-
+            else:
+                flash("Login of password is unknown")
+                app.logger.warn("Wrong password '%s' for user '%s' during login" % (request.form["password"], request.form["username"]))
+        else:
+            app.logger.warn("User with login '%s' not found" % request.form["username"])
         return redirect(url_for("login"))
 
     return render_template("login.html")
