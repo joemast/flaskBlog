@@ -74,8 +74,9 @@ def sign():
                 return redirect(url_for("login"))
             except exc.SQLAlchemyError as ex:
                 app.logger.error("Error during user creation: %s" % ex.message)
-                flash("This Username Or Email Alredy Exists")
-                return redirect(url_for("sign"))
+                raise Exception(ex.message)
+                # flash("This Username Or Email Alredy Exists")
+                # return redirect(url_for("sign"))
 
     return render_template("sign.html")
 
