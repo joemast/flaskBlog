@@ -68,12 +68,14 @@ def sign():
                              request.form["name"],
                              request.form["password"])
                 db.session.add(user)
+                app.logger.info("Save user to DB: %s" % user)
                 db.session.commit()
                 flash("User Sign")
                 return redirect(url_for("login"))
-            except exc.IntegrityError:
+            except exc.SQLAlchemyError as ex:
+                app.logger.error("Error during user creation: %s" % ex.message)
                 flash("This Username Or Email Alredy Exists")
-                return redirect(url_for("login"))
+                return redirect(url_for("sign"))
 
     return render_template("sign.html")
 

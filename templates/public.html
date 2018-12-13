@@ -2,15 +2,13 @@
 
 {% block content %}
 
-{{ user }}
-
 {% if result %}
 {% for r in result %}
 <br>
   <div class="card">
     <div class="card-header">
       <h4 class="card-title">{{ r.title }}</h4>
-      <h5 class="card-title">{{ r.pub_date|format_date }}</h5>
+      <h8 class="card-title">{{ r.pub_date }}</h8>
     </div>
     <div class="card-block">
       <p class="card-text text-justify">{{ r.content|truncate_chars }}...<a href="{{ url_for('post', post_id=r.id) }}">leia mais!</a></p>

@@ -2,10 +2,8 @@
 
 {% block content %}
 
-{{ user }}
-
-{% if result %}
-{% for r in result %}
+{% if result.first() is not none %}
+  {% for r in result %}
 <br>
   <div class="card">
     <div class="card-header">
@@ -20,7 +18,8 @@
   </div>
 
     {% endfor %}
-
+{% else %}
+<p>No posts found. Please add one <a href="{{ url_for("index") }}">here</a></p>
 {% endif %}
 
 

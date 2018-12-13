@@ -26,7 +26,7 @@ class Login(UserMixin, db.Model):
         self.password = genpass(password)
 
     def __repr__(self):
-        return "Login {}".format(self.username)
+        return "Username: %s\n".format(self.username)
 
 
 class Post(db.Model):
