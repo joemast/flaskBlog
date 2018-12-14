@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy as conn
 from werkzeug.security import generate_password_hash as genpass
 from flask_login import UserMixin
 from datetime import datetime
+from random import randint
 
 
 db = conn()
@@ -26,7 +27,7 @@ class Login(UserMixin, db.Model):
         self.password = genpass(password)
 
     def __repr__(self):
-        return "Username: %s\nEmail: %s" % (self.username, self.email)
+        return "Username: '%s'; Email: '%s'" % (self.username, self.email)
 
 
 class Post(db.Model):
@@ -34,10 +35,16 @@ class Post(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     title = db.Column(db.String(255))
     content = db.Column(db.String(80))
-    pub_date = db.Column(db.DateTime, default=datetime.utcnow())
+    pub_date = db.Column(db.DateTime)
 
     login_id = db.Column(db.Integer, db.ForeignKey("login.id"))
 
+    def __init__(self, title, content, login_id):
+        self.title = title
+        self.content = content
+        self.login_id = login_id
+        # self.pub_date = datetime.utcnow()
+        self.pub_date = datetime(randint(2010, 2018), randint(1, 12), randint(1, 28))
 
     def __repr__(self):
         return "Post {}".format(self.login_id)

@@ -9,9 +9,12 @@ from flaskext.markdown import Markdown
 from models import Login, Post, db
 from sqlalchemy import exc
 from werkzeug.security import check_password_hash as chpass
+import logging
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
+logging.basicConfig(filename='application.log', level=logging.DEBUG)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 Markdown(app)
@@ -45,9 +48,9 @@ def before_request():
     db.create_all()
 
 
-@app.errorhandler(404)
-def errorhandler(e):
-    return redirect(url_for("login"))
+# @app.errorhandler(404)
+# def errorhandler(e):
+#     return redirect(url_for("login"))
 
 
 @app.route("/sign", methods=["GET", "POST"])
@@ -68,14 +71,14 @@ def sign():
                              request.form["name"],
                              request.form["password"])
                 db.session.add(user)
-                app.logger.info("Save user to DB: %s" % user)
+                logging.info("Save user to DB: %s" % user)
                 db.session.commit()
                 flash("User Sign")
                 return redirect(url_for("login"))
             except exc.SQLAlchemyError as ex:
-                app.logger.error("Error during user creation: %s" % ex.message)
+                logging.error("Error during user creation: %s" % ex.message)
                 raise Exception(ex.message)
-                # flash("This Username Or Email Alredy Exists")
+                # flash("This Username Or Email Already Exists")
                 # return redirect(url_for("sign"))
 
     return render_template("sign.html")
@@ -99,14 +102,20 @@ def index():
 @app.route("/result", methods=["POST", "GET"])
 @login_required
 def result():
-    post = Post.query.filter_by(login_id=current_user.id)
+    post = Post.query.filter_by(login_id=current_user.id).order_by(Post.content)
+    # post = Post.query.filter_by(login_id=current_user.id).order_by(Post.pub_date.desc())
     return render_template("result.html", result=post,
                             user=current_user.username)
 
 
+@app.route("/about", methods=["GET"])
+def about():
+    return render_template("about.html")
+
+
 @app.route("/public", methods=["POST", "GET"])
 def public():
-    post = Post.query.all()
+    post = Post.query.filter_by().order_by(Post.pub_date.desc())
     return render_template("public.html", result=post)
 
 
@@ -135,9 +144,9 @@ def update(uid):
 @login_required
 def delete(uid):
     db.session.query(Post).filter_by(id=uid).delete()
-    db.session.commit()
-    return redirect(url_for("result"))
-
+    # db.session.commit()
+    # return redirect(url_for("result"))
+    return redirect("/deleted")
 
 @app.route("/logout")
 @login_required
@@ -159,9 +168,9 @@ def login():
                 return redirect(url_for("index"))
             else:
                 flash("Login of password is unknown")
-                app.logger.warn("Wrong password '%s' for user '%s' during login" % (request.form["password"], request.form["username"]))
+                logging.warn("Wrong password '%s' for user '%s' during login" % (request.form["password"], request.form["username"]))
         else:
-            app.logger.warn("User with login '%s' not found" % request.form["username"])
+            logging.warn("User with login '%s' not found" % request.form["username"])
         return redirect(url_for("login"))
 
     return render_template("login.html")

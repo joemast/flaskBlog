@@ -11,7 +11,7 @@
       <h8 class="card-title">{{ r.pub_date }}</h8>
     </div>
     <div class="card-block">
-      <p class="card-text text-justify">{{ r.content|truncate_chars }}...<a href="{{ url_for('post', post_id=r.id) }}">leia mais!</a></p>
+      <p class="card-text text-justify">{{ r.content|truncate_chars }}... <a href="{{ url_for('post', post_id=r.id) }}">> read more</a></p>
     </div>
   </div>
 

@@ -13,12 +13,14 @@
     <div class="row">
       <div class="col-12">
         <label for="exampleInputPassword1">Title</label>
-        <input type="text" class="form-control" name="title" value="{{ post.title }}" id="exampleInputPassword1" placeholder="Name">
+        <!--input type="text" class="form-control" name="title" value="{{ post.title }}" id="exampleInputPassword1" placeholder="Name"-->
+        <input type="text" name="title" value="{{ post.title }}" id="exampleInputPassword1" placeholder="Name">
       </div>
 
       <div class="col-12">
         <label for="exampleTextarea">Content</label>
-        <textarea class="form-control" rows="12" id="exampleTextarea" name="content" rows="3">{{ post.content }}</textarea>
+        <!--textarea class="form-control" rows="12" id="exampleTextarea" name="content" rows="3">{{ post.content }}</textarea-->
+        <textarea rows="12" id="exampleTextarea" name="content" rows="3">{{ post.content }}</textarea>
       </div>
     </div>
     <br>
