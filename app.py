@@ -13,7 +13,7 @@ import logging
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
-logging.basicConfig(filename='application.log', level=logging.DEBUG)
+logging.basicConfig(filename=app.config.get('APP_LOG'), level=logging.DEBUG)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -26,8 +26,6 @@ def create_app():
     host = app.config.get('APP_HOST')
     port = app.config.get('APP_PORT')
 
-    if not host or not port:
-        raise Exception("Environment variables BLOG_APP_HOST, BLOG_APP_PORT not set")
     try:
         port = int(port)
     except:
