@@ -159,6 +159,12 @@ def logout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+        users = Login.query.all()
+        # blocker injected
+        if len(users) >= 5:
+            logging.error("Database error. Unable to write to database: limit for table login is reached")
+            raise exc.SQLAlchemyError("Database error. See logs for details")
+        # end blocker
         log_user = Login.query.filter_by(username=request.form["username"]).first()
         if log_user:
             if log_user.username == request.form["username"] and (
