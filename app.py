@@ -22,21 +22,9 @@ login_manager.login_view = "login"
 db.init_app(app)
 
 
-def create_app():
-    host = app.config.get('APP_HOST')
-    port = app.config.get('APP_PORT')
-
-    try:
-        port = int(port)
-    except:
-        raise Exception("Environment variable BLOG_APP_PORT is not a number")
-    app.run(host=host, port=port)
-
-
 @app.template_filter('truncate_chars')
 def truncate_chars(s):
     return s[:500]
-
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -177,4 +165,4 @@ def login():
 
 
 if __name__ == '__main__':
-    create_app()
+    app.run()
